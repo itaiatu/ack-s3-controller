@@ -88,19 +88,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	fieldObjectSelectors, err := ackCfg.ParseFieldObjectSelectors()
+	labelObjectSelectors, err := ackCfg.ParseLabelObjectSelectors()
 	if err != nil {
 		setupLog.Error(
-			err, "Unable to parse field object selectors.",
+			err, "Unable to parse label object selectors.",
 			"aws.service", awsServiceAlias,
 		)
 		os.Exit(1)
 	}
 
 	setupLog.Info(
-		"using field object selectors",
+		"using label object selectors",
 		"aws.service", awsServiceAlias,
-		"fieldObjectSelectors", fieldObjectSelectors,
+		"labelObjectSelectors", labelObjectSelectors,
 	)
 
 	watchNamespaces := make(map[string]ctrlrtcache.Config, 0)
@@ -121,7 +121,7 @@ func main() {
 		Cache: ctrlrtcache.Options{
 			Scheme:            scheme,
 			DefaultNamespaces: watchNamespaces,
-			DefaultFieldSelector: fieldObjectSelectors,
+			DefaultLabelSelector: labelObjectSelectors,
 		},
 		WebhookServer: &ctrlrtwebhook.DefaultServer{
 			Options: ctrlrtwebhook.Options{
