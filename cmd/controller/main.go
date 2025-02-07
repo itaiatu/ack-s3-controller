@@ -88,6 +88,21 @@ func main() {
 		os.Exit(1)
 	}
 
+	fieldObjectSelectors, err := ackCfg.ParseFieldObjectSelectors()
+	if err != nil {
+		setupLog.Error(
+			err, "Unable to parse field object selectors.",
+			"aws.service", awsServiceAlias,
+		)
+		os.Exit(1)
+	}
+
+	setupLog.Info(
+		"using field object selectors",
+		"aws.service", awsServiceAlias,
+		"fieldObjectSelectors", fieldObjectSelectors,
+	)
+
 	watchNamespaces := make(map[string]ctrlrtcache.Config, 0)
 	namespaces, err := ackCfg.GetWatchNamespaces()
 	if err != nil {
@@ -106,6 +121,7 @@ func main() {
 		Cache: ctrlrtcache.Options{
 			Scheme:            scheme,
 			DefaultNamespaces: watchNamespaces,
+			DefaultFieldSelector: fieldObjectSelectors,
 		},
 		WebhookServer: &ctrlrtwebhook.DefaultServer{
 			Options: ctrlrtwebhook.Options{
